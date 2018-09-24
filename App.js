@@ -14,21 +14,12 @@ import { white, black } from './utils/colors'
 
 const store = createStore(reducer, middleware)
 
-//TODO - Remove debug
-//import Reactotron from 'reactotron-react-native'
-//Reactotron
-//  .configure() // controls connection & communication settings
-//  .useReactNative() // add all built-in react native plugins
-//  .connect() // let's connect!
-
 const Tabs = createMaterialTopTabNavigator({
-  Decks: { 
-    screen: DeckList,
-    tabBarLabel: 'Decks'
+  'Decks': { 
+    screen: DeckList
   },
-  NewDeck: {
-    screen: NewDeck,
-    tabBarLabel: 'New Deck'
+  'New Deck': {
+    screen: NewDeck
   }
 })
 
@@ -40,7 +31,7 @@ const MainNavigator = createStackNavigator({
     screen: Deck,
     navigationOptions: ({ navigation }) => ({
       headerTintColor: white,
-      title: `${navigation.state.params.key}`,
+      title: `${navigation.state.params.deckTitle}`,
       headerStyle: {
         backgroundColor: black
       }
@@ -48,7 +39,7 @@ const MainNavigator = createStackNavigator({
   }
 })
 
-export default class App extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
@@ -57,3 +48,5 @@ export default class App extends React.Component {
     );
   }
 }
+
+export default App

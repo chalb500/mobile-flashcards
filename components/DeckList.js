@@ -3,9 +3,13 @@ import {
   StyleSheet, 
   Text, 
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from 'react-native';
-import { handleGetDecks } from '../actions/decks'
+import { 
+  handleGetDecks,
+  handleGetDeck
+ } from '../actions/decks'
 import { connect } from 'react-redux'
 
 class DeckList extends Component {
@@ -15,19 +19,28 @@ class DeckList extends Component {
     //Get the list of decks
     dispatch(handleGetDecks())
   }
+  handleOnPress(key) {
+    const { dispatch,  navigation } = this.props
+
+    //Set the selected deck
+    dispatch(handleGetDeck(key))
+
+    //Navigate
+    navigation.navigate('Deck', { deckTitle: key })
+  }
   render() {
 
-    const { decks, navigation } = this.props
+    const { decks } = this.props
 
     return (
-      <View>
+      <ScrollView>
         {
           decks 
             ? Object.keys(decks).map((key) => (
               <View key={key} style={styles.bottomBorder}>
                 <TouchableOpacity 
                   style={styles.deck} 
-                  onPress={() => navigation.navigate('Deck', { key: key })}>
+                  onPress={() => this.handleOnPress(key)}>
                     <Text style={styles.deckTitle}>
                         {decks[key].title}
                     </Text>
@@ -43,7 +56,7 @@ class DeckList extends Component {
             ))
             : null
         }
-      </View>
+      </ScrollView>
     )
   }
 }

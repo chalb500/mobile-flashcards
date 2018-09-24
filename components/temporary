@@ -1,0 +1,13 @@
+    dispatch(handleAddCardToDeck('potato', { question: 'Please work', answer: 'Please do' }))
+    dispatch(handleGetDeck('potato'))
+    dispatch(handleGetDecks())
+
+      componentDidMount() {
+
+    const { dispatch } = this.props
+    
+    dispatch(handleSaveDeckTitle('potato'))
+  }
+
+
+   

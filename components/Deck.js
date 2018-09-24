@@ -7,43 +7,44 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { black, white } from './../utils/colors'
+import { handleGetDeck } from '../actions/decks'
 
 class Deck extends Component {
   render(){
     const { deck } = this.props
 
     return (
-      <View style={styles.container}>
-        <Text style={styles.deckTitle}>{ deck.title }</Text>
-        <Text style={styles.cardNumber}>
-          {
-            deck.questions.length === 1
-              ? deck.questions.length + ' card'
-              : deck.questions.length + ' cards'
-          }
-        </Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            onPress={() => {}}
-            style={styles.button}>
-            <Text style={styles.buttonText}>Add Card</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => {}}
-            style={[styles.button, styles.startQuizButton]}>
-            <Text style={[styles.buttonText, styles.startQuizButtonText]}>Start Quiz</Text>
-          </TouchableOpacity>
+      deck
+      ? <View style={styles.container}>
+          <Text style={styles.deckTitle}>{ deck.title }</Text>
+          <Text style={styles.cardNumber}>
+            {
+              deck.questions.length === 1
+                ? deck.questions.length + ' card'
+                : deck.questions.length + ' cards'
+            }
+          </Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity 
+              onPress={() => {}}
+              style={styles.button}>
+              <Text style={styles.buttonText}>Add Card</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {}}
+              style={[styles.button, styles.startQuizButton]}>
+              <Text style={[styles.buttonText, styles.startQuizButtonText]}>Start Quiz</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      : <View />
     )
   }
 }
 
-function mapStateToProps({ decks }, { navigation }) {
-  const { key } = navigation.state.params
-
+function mapStateToProps({ deck }) {
   return {
-    deck: decks[key]
+    deck
   }
 }
 

@@ -32,13 +32,6 @@ export function handleSaveDeckTitle( title ) {
   }
 }
 
-function saveDeck( title ) {
-  return {
-    type: SAVE_DECK_TITLE,
-    title
-  }
-}
-
 export function handleGetDeck( title ) {
   return (dispatch) => {
     return getDeck( title )
