@@ -11,6 +11,8 @@ import DeckList from './components/DeckList'
 import NewDeck from './components/NewDeck'
 import Deck from './components/Deck'
 import { white, black } from './utils/colors'
+import AddCard from './components/AddCard'
+import Quiz from './components/Quiz'
 
 const store = createStore(reducer, middleware)
 
@@ -29,13 +31,36 @@ const MainNavigator = createStackNavigator({
   },
   Deck: {
     screen: Deck,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: {
       headerTintColor: white,
-      title: `${navigation.state.params.deckTitle}`,
+      headerLeftTintColor: white,
+      title: 'Deck',
       headerStyle: {
         backgroundColor: black
       }
-    })
+    }
+  },
+  AddCard: {
+    screen: AddCard,
+    navigationOptions: {
+      headerTintColor: white,
+      headerLeftTintColor: white,
+      title: `Add Card`,
+      headerStyle: {
+        backgroundColor: black
+      }
+    }
+  },
+  Quiz: {
+    screen: Quiz,
+    navigationOptions: {
+      headerTintColor: white,
+      headerLeftTintColor: white,
+      title: `Quiz`,
+      headerStyle: {
+        backgroundColor: black
+      }
+    }
   }
 })
 

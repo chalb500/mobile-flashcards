@@ -10,6 +10,23 @@ import { black, white } from './../utils/colors'
 import { handleGetDeck } from '../actions/decks'
 
 class Deck extends Component {
+  handleOnAddCardPress() {
+    const { navigation } = this.props
+
+    //Navigate to the add card view
+    navigation.navigate('AddCard')
+  }
+  handleQuizPress() {
+    const { navigation } = this.props
+    const { deck } = this.props
+
+    if (deck.questions.length === 0 ) {
+      return
+    }
+
+    //Navigate to the quiz view
+    navigation.navigate('Quiz')
+  }
   render(){
     const { deck } = this.props
 
@@ -26,12 +43,12 @@ class Deck extends Component {
           </Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
-              onPress={() => {}}
+              onPress={() => this.handleOnAddCardPress()}
               style={styles.button}>
               <Text style={styles.buttonText}>Add Card</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              onPress={() => {}}
+              onPress={() => this.handleQuizPress()}
               style={[styles.button, styles.startQuizButton]}>
               <Text style={[styles.buttonText, styles.startQuizButtonText]}>Start Quiz</Text>
             </TouchableOpacity>
