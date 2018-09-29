@@ -3,7 +3,8 @@ import {
   StyleSheet, 
   Text, 
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated
 } from 'react-native'
 import { connect } from 'react-redux'
 import { black, white } from './../utils/colors'
@@ -28,12 +29,21 @@ class Deck extends Component {
     navigation.navigate('Quiz')
   }
   render(){
-    const { deck } = this.props
+    const { deck, titleAnim } = this.props
+
+    //Grow the deck title
+    Animated.timing(
+      titleAnim,
+      {
+        toValue: 40,
+        duration: 500
+      }
+    ).start()
 
     return (
       deck
       ? <View style={styles.container}>
-          <Text style={styles.deckTitle}>{ deck.title }</Text>
+          <Animated.Text style={[styles.deckTitle, { fontSize: titleAnim }]}>{ deck.title }</Animated.Text>
           <Text style={styles.cardNumber}>
             {
               deck.questions.length === 1
@@ -61,7 +71,8 @@ class Deck extends Component {
 
 function mapStateToProps({ deck }) {
   return {
-    deck
+    deck,
+    titleAnim: new Animated.Value(0)
   }
 }
 
@@ -73,7 +84,7 @@ const styles = StyleSheet.create({
   },
   deckTitle: {
     fontWeight: '900',
-    fontSize: 40,
+    //fontSize: 40,
     textAlign: 'center',
     marginBottom: 20
   },
