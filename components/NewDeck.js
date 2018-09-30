@@ -34,7 +34,10 @@ class NewDeck extends Component {
         refreshDeck()
 
         //Navigate to the deck screen
-        navigation.navigate('Deck', { title: deckTitle })
+        navigation.navigate('Deck', { 
+          title: deckTitle,
+          refreshDeck: refreshDeck
+         })
 
         //Reset the state
         this.setState({ 

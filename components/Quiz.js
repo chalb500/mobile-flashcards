@@ -21,8 +21,6 @@ class Quiz extends Component {
     const { params } = this.props.navigation.state;
 
     clearNotification()
-
-    console.log('here' + params.title)
     
     //Set the deck
     getDeck(params.title)

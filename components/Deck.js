@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
   },
   deckTitle: {
     fontWeight: '900',
-    //fontSize: 40,
     textAlign: 'center',
     marginBottom: 20
   },

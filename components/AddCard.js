@@ -14,6 +14,10 @@ import {
   getDeck,
   addCardToDeck
 } from '../utils/helpers'
+import { 
+  StackActions, 
+  NavigationActions 
+} from 'react-navigation';
 
 class AddCard extends Component {
   state = {
@@ -55,7 +59,10 @@ class AddCard extends Component {
         params.refreshDeck()
 
         //Return to the deck view
-        navigation.navigate('Home')
+        navigation.dispatch(StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'Home' })]
+        }))
       })
   }
   render() {
