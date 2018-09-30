@@ -1,39 +1,106 @@
 import { AsyncStorage } from 'react-native'
+import {
+  Notifications,
+  Permissions
+} from 'expo'
+
+const DECKS_KEY = 'MobileNotifications:decks'
 
 export function addCardToDeck( title, card ) {
-  return AsyncStorage.getItem( title )
+  return AsyncStorage.getItem(DECKS_KEY)
     .then(JSON.parse)
-    .then((deck) => {
+    .then((data) => {
       //Add the card to the deck
-      deck.questions.push(card)
+      data[title].questions.push(card)
 
-      //Re-save the deck
-      AsyncStorage.setItem(title, JSON.stringify(deck))
+      //Save the deck
+      AsyncStorage.setItem(DECKS_KEY, JSON.stringify(data))
     })
 }
 
 export function saveDeckTitle( title ) {
-  //Create the deck
-  const deck = JSON.stringify({ title: title, questions: [] })
+  return AsyncStorage.getItem(DECKS_KEY)
+    .then(JSON.parse)
+    .then((data) => {
+      //Create an object if this is the first deck
+      if (!data) { data = {} }
 
-  //Save the deck
-  return AsyncStorage.setItem(title, deck)
+      //Create the deck
+      data[title] = { title: title, questions: [] }
+
+      //Save the updated deck
+      return AsyncStorage.setItem(DECKS_KEY, JSON.stringify(data))
+    })
 }
 
 export function getDeck(id) {
-  return AsyncStorage.getItem(id)
+  return AsyncStorage.getItem(DECKS_KEY)
     .then(JSON.parse)
+    .then((data) => {
+      return data[id]
+    })
 }
 
-export async function getDecks () {
-  //Get the keys
-  const keys = await AsyncStorage.getAllKeys()
+export function getDecks () {
+  return AsyncStorage.getItem(DECKS_KEY)
+    .then(JSON.parse)
+    .then((data) => {
+      return data
+    })
+}
 
-  //Create the required JSON item
-  const root = {}
-  for (const item of keys) {
-    root[item] = await getDeck(item)
+const NOTIFICATIONS_KEY = 'MobileFlashcards:notifications'
+
+export function setNotification() {
+  AsyncStorage.getItem(NOTIFICATIONS_KEY)
+    .then(JSON.parse)
+    .then((data) => {
+      if (data === null) {
+        //Check for permission
+        Permissions.askAsync(Permissions.NOTIFICATIONS)
+          .then(( {status} ) => {
+            if (status === 'granted') {
+              Notifications.cancelAllScheduledNotificationsAsync()
+
+              //Set for 10:00AM
+              let tomorrow = new Date()
+              tomorrow.setDate(tomorrow.getDate() + 1)
+              tomorrow.setHours(10)
+              tomorrow.setMinutes(0)
+
+              //Repeat daily
+              Notifications.scheduleLocalNotificationAsync(
+                createNotification(),
+                {
+                  time: tomorrow,
+                  repeat: 'day'
+                }
+              )
+
+              AsyncStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(true))
+            }
+          })
+      }
+    })
+}
+
+function createNotification() {
+  return {
+    title: 'Study your flash cards',
+    body: 'Don\'t forget to study today',
+    ios: {
+      sound: true
+    },
+    android: {
+      sound: true,
+      priority: 'high',
+      sticky: false,
+      vibrate: true
+    }
   }
+}
 
-  return root
+export function clearNotification() {
+  return AsyncStorage.removeItem(NOTIFICATIONS_KEY)
+    .then(Notifications.cancelAllScheduledNotificationsAsync())
 }

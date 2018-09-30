@@ -6,18 +6,13 @@ import {
   TouchableOpacity,
   TextInput 
 } from 'react-native';
-import {
-  handleSaveDeckTitle,
-  handleGetDeck,
-  handleGetDecks
-} from '../actions/decks'
-import {
-  connect
-} from 'react-redux'
 import { 
   black, 
   white 
 } from '../utils/colors'
+import {
+  saveDeckTitle
+} from '../utils/helpers'
 
 class NewDeck extends Component {
   state = {
@@ -25,28 +20,27 @@ class NewDeck extends Component {
   }
   handleOnPress() {
     const { deckTitle } = this.state
-    const { dispatch, navigation, deck } = this.props
+    const { dispatch, navigation } = this.props
+    const { refreshDeck } = this.props.screenProps 
 
     if (deckTitle.length == 0) {
       return;
     }
 
     //Create the new deck
-    dispatch(handleSaveDeckTitle(deckTitle))
+    saveDeckTitle( deckTitle )
+      .then(() => {
+        //Refresh the decks
+        refreshDeck()
 
-    //Refresh the entire deck list
-    dispatch(handleGetDecks())
+        //Navigate to the deck screen
+        navigation.navigate('Deck', { title: deckTitle })
 
-    //Set the selected deck
-    dispatch(handleGetDeck(deckTitle))
-
-    //Reset the state
-    this.setState({ 
-      deckTitle: ''
-    })
-
-    //Navigate to the deck screen
-    navigation.navigate('Deck', { deckTitle: deckTitle })
+        //Reset the state
+        this.setState({ 
+          deckTitle: ''
+        })
+      })
   }
   render() {
     return (
@@ -115,11 +109,4 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = (state) => {
-  return {
-    deck: state.deck,
-    decks: state.decks
-  }
-}
-
-export default connect(mapStateToProps)(NewDeck)
+export default NewDeck

@@ -3,18 +3,16 @@ import {
   createMaterialTopTabNavigator,
   createStackNavigator
 } from 'react-navigation'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
-import reducer from './reducers'
-import middleware from './middleware'
 import DeckList from './components/DeckList'
 import NewDeck from './components/NewDeck'
 import Deck from './components/Deck'
 import { white, black } from './utils/colors'
 import AddCard from './components/AddCard'
 import Quiz from './components/Quiz'
-
-const store = createStore(reducer, middleware)
+import { 
+  setNotification, 
+  getDecks 
+} from './utils/helpers'
 
 const Tabs = createMaterialTopTabNavigator({
   'Decks': { 
@@ -65,11 +63,27 @@ const MainNavigator = createStackNavigator({
 })
 
 class App extends React.Component {
+  state = {
+    decks: null
+  }
+  componentDidMount() {
+    setNotification()
+    this.refresh()
+  }
+  refresh() {
+    getDecks()
+      .then((decks) => {
+        this.setState({
+          decks: decks
+        })
+      })
+  }
   render() {
     return (
-      <Provider store={store}>
-        <MainNavigator />
-      </Provider>
+      <MainNavigator screenProps={{
+        decks: this.state.decks,
+        refreshDeck: () => this.refresh()
+      }}/>
     );
   }
 }

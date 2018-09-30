@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { 
   StyleSheet, 
   Text, 
@@ -12,18 +11,36 @@ import {
   white,
   black 
 } from '../utils/colors'
-
-//TODO: Fix this layout using flex box
+import { 
+  clearNotification, 
+  getDeck 
+} from '../utils/helpers'
 
 class Quiz extends Component {
+  componentDidMount() {
+    const { params } = this.props.navigation.state;
+
+    clearNotification()
+
+    console.log('here' + params.title)
+    
+    //Set the deck
+    getDeck(params.title)
+    .then((deck) => {
+      this.setState({
+        deck: deck
+      })
+    })
+  }
   state = {
     currentQuestionNumber: 0,
     showQuestion: true,
     correctCount: 0,
-    showResults: false
+    showResults: false,
+    deck: null
   }
   handlePressCorrect() {
-    const { deck } = this.props
+    const { deck } = this.state
     const { currentQuestionNumber, correctCount } = this.state
 
     this.setState({
@@ -38,7 +55,7 @@ class Quiz extends Component {
     }
   }
   handlePressIncorrect() {
-    const { deck } = this.props
+    const { deck } = this.state
     const { currentQuestionNumber } = this.state
 
     this.setState({
@@ -51,8 +68,16 @@ class Quiz extends Component {
       })
     }
   }
+  handlePressRestart() {
+    this.setState({
+      currentQuestionNumber: 0, 
+      showQuestion: true, 
+      correctCount: 0,
+      showResults: false 
+    })
+  }
   render() {
-    const { deck } = this.props
+    const { deck } = this.state
     const { 
       currentQuestionNumber, 
       showQuestion, 
@@ -65,12 +90,18 @@ class Quiz extends Component {
         ?<View style={styles.container}>
           {showResults
             ?<View style={styles.resultsContainer}>
-              <Text style={styles.resultsText}>
-                Your final score is: 
-              </Text>
-              <Text style={styles.resultsText}>
-                {(correctCount/deck.questions.length)*100}%
-              </Text>
+              <View>
+                <Text style={styles.resultsText}>
+                  Final score: {Math.round((correctCount/deck.questions.length)*100)}%
+                </Text>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => this.handlePressRestart()}
+                  style={[styles.button, styles.blackButton]}>
+                  <Text style={styles.whiteText}>Restart Quiz</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             :<View>
               <View style={styles.cardCounterContainer}>
@@ -186,13 +217,10 @@ const styles = StyleSheet.create({
   },
   redButton: {
     backgroundColor: red
+  },
+  blackButton: {
+    backgroundColor: black
   }
 })
 
-function mapStateToProps({ deck }) {
-  return {
-    deck
-  }
-}
-
-export default connect(mapStateToProps)(Quiz)
+export default Quiz

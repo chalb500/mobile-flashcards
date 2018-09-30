@@ -6,31 +6,22 @@ import {
   TouchableOpacity,
   ScrollView
 } from 'react-native';
-import { 
-  handleGetDecks,
-  handleGetDeck
- } from '../actions/decks'
-import { connect } from 'react-redux'
+import {
+  getDecks
+} from '../utils/helpers'
 
 class DeckList extends Component {
-  componentDidMount() {
-    const { dispatch } = this.props
-    
-    //Get the list of decks
-    dispatch(handleGetDecks())
-  }
   handleOnPress(key) {
-    const { dispatch,  navigation } = this.props
+    const { dispatch, navigation } = this.props
+    const { refreshDeck } = this.props.screenProps
 
-    //Set the selected deck
-    dispatch(handleGetDeck(key))
-
-    //Navigate
-    navigation.navigate('Deck', { deckTitle: key })
+    navigation.navigate('Deck', { 
+      title: key,
+      refreshDeck: refreshDeck
+    })
   }
   render() {
-
-    const { decks } = this.props
+    const { decks } = this.props.screenProps
 
     return (
       <ScrollView>
@@ -61,12 +52,6 @@ class DeckList extends Component {
   }
 }
 
-function mapStateToProps({ decks }) {
-  return {
-    decks
-  }
-}
-
 const styles = StyleSheet.create({
   deck: {
     padding: 40
@@ -85,4 +70,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps)(DeckList)
+export default DeckList

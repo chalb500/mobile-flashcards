@@ -6,30 +6,55 @@ import {
   TouchableOpacity,
   Animated
 } from 'react-native'
-import { connect } from 'react-redux'
 import { black, white } from './../utils/colors'
-import { handleGetDeck } from '../actions/decks'
+import {
+  getDeck
+} from '../utils/helpers'
 
 class Deck extends Component {
+  state = {
+    deck: null,
+    titleAnim: new Animated.Value(0)
+  }
+  componentDidMount() {
+    //Grab the navigation param
+    const { params } = this.props.navigation.state;
+
+    //Set the deck
+    getDeck(params.title)
+      .then((deck) => {
+        this.setState({
+          deck: deck
+        })
+      })
+  }
   handleOnAddCardPress() {
     const { navigation } = this.props
 
+    const { params } = this.props.navigation.state;
+
     //Navigate to the add card view
-    navigation.navigate('AddCard')
+    navigation.navigate('AddCard', { 
+      title: params.title,
+      refreshDeck: params.refreshDeck
+    })
   }
   handleQuizPress() {
     const { navigation } = this.props
-    const { deck } = this.props
+    const { deck } = this.state
+    const { params } = this.props.navigation.state;
 
     if (deck.questions.length === 0 ) {
       return
     }
 
     //Navigate to the quiz view
-    navigation.navigate('Quiz')
+    navigation.navigate('Quiz', { 
+      title: params.title
+    })
   }
   render(){
-    const { deck, titleAnim } = this.props
+    const { deck, titleAnim } = this.state
 
     //Grow the deck title
     Animated.timing(
@@ -66,13 +91,6 @@ class Deck extends Component {
         </View>
       : <View />
     )
-  }
-}
-
-function mapStateToProps({ deck }) {
-  return {
-    deck,
-    titleAnim: new Animated.Value(0)
   }
 }
 
@@ -113,4 +131,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps)(Deck)
+export default Deck

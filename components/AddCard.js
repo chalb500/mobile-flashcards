@@ -10,21 +10,32 @@ import {
   black, 
   white 
 } from '../utils/colors'
-import { 
-  handleAddCardToDeck,
-  handleGetDeck,
-  handleGetDecks
-} from '../actions/decks'
-import { connect } from 'react-redux'
+import {
+  getDeck,
+  addCardToDeck
+} from '../utils/helpers'
 
 class AddCard extends Component {
   state = {
     question: '',
-    answer: ''
+    answer: '',
+    deck: null
+  }
+  componentDidMount() {
+    const { params } = this.props.navigation.state;
+
+    //Set the deck
+    getDeck(params.title)
+      .then((deck) => {
+        this.setState({
+          deck: deck
+        })
+      })
   }
   handleSubmit() {
-    const { question, answer } = this.state
-    const { dispatch, deck, navigation } = this.props
+    const { question, answer, deck } = this.state
+    const { navigation } = this.props
+    const { params } = this.props.navigation.state;
 
     //If either question or answer are empty, stop
     if (question.length === 0 || answer.length === 0) {
@@ -32,23 +43,24 @@ class AddCard extends Component {
     }
 
     //Add the card to the deck
-    dispatch(handleAddCardToDeck(deck.title, { question: question, answer: answer }))
-    
-    //Refresh the deck lists
-    dispatch(handleGetDecks())
+    addCardToDeck(deck.title, { question: question, answer: answer })
+      .then(() => {
+        //Reset the question and answer field
+        this.setState({
+          question: '',
+          answer: ''
+        })
 
-    //Reset the question and answer field
-    this.setState({
-      question: '',
-      answer: ''
-    })
+        //Refresh the list of decks
+        params.refreshDeck()
 
-    //Return to the deck view
-    navigation.navigate('Home')
+        //Return to the deck view
+        navigation.navigate('Home')
+      })
   }
   render() {
 
-    const { deck } = this.props
+    const { deck } = this.state
 
     return (
       deck
@@ -129,10 +141,4 @@ const styles = StyleSheet.create({
   }
 })
 
-function mapStateToProps({ deck }) {
-  return {
-    deck
-  }
-}
-
-export default connect(mapStateToProps)(AddCard)
+export default AddCard
