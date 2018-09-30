@@ -21,3 +21,5 @@
   * On the command line screen, when presented with a list of options to run the app, press 's'
   * Provide you phone number to receive a text
   * After receiving the text, click on the link in the text to launch the Mobile Flashcards app via Expo
+
+The Mobile Flashcards app was tested for compatibility with iOS and Android OS's
