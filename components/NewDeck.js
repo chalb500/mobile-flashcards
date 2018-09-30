@@ -4,7 +4,8 @@ import {
   Text, 
   View,
   TouchableOpacity,
-  TextInput 
+  TextInput,
+  Platform 
 } from 'react-native';
 import { 
   black, 
@@ -53,7 +54,7 @@ class NewDeck extends Component {
         </View>
         <View style={styles.textInputContainer}>
           <TextInput 
-            style={styles.textInput}
+            style={Platform.OS === 'ios' ? styles.textInputIOS : styles.textInputAndroid }
             placeholder="Deck Title"
             value={this.state.deckTitle}
             onChangeText={ (text) => this.setState({ deckTitle: text }) } />
@@ -84,10 +85,13 @@ const styles = StyleSheet.create({
     padding: 5,
     flexDirection: 'row'
   },
-  textInput: {
+  textInputIOS: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: black,
     flex: 1
+  },
+  textInputAndroid: {
+    flex: 1,
   },
   text: {
     fontWeight: '900',

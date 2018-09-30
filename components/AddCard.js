@@ -4,7 +4,8 @@ import {
   Text, 
   View,
   TouchableOpacity,
-  TextInput 
+  TextInput,
+  Platform
 } from 'react-native';
 import { 
   black, 
@@ -81,7 +82,7 @@ class AddCard extends Component {
           <TextInput 
             onChangeText={(questionText) => this.setState({ question: questionText })}
             value={this.state.question}
-            style={styles.textInput} />
+            style={ Platform.OS === 'ios' ? styles.textInputIOS : styles.textInputAndroid } />
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.text}>
@@ -92,7 +93,7 @@ class AddCard extends Component {
           <TextInput 
             onChangeText={(answerText) => this.setState({ answer: answerText })}
             value={this.state.answer}
-            style={styles.textInput} />
+            style={ Platform.OS === 'ios' ? styles.textInputIOS : styles.textInputAndroid } />
         </View>
         <View>
           <TouchableOpacity 
@@ -141,10 +142,13 @@ const styles = StyleSheet.create({
     padding: 5,
     flexDirection: 'row'
   },
-  textInput: {
+  textInputIOS: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: black,
     flex: 1
+  },
+  textInputAndroid: {
+    flex: 1,
   }
 })
 
